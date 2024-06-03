@@ -1,0 +1,93 @@
+# Відмінити всі наявні правила
+*
+
+# Спеціальні винятки для PHPStorm проектів
+!.gitignore
+!*.php
+!*.html
+!*.css
+!*.js
+!*.json
+!*.xml
+!*.md
+!*.txt
+
+# PHPStorm специфічні файли
+.idea/
+*.iml
+*.iws
+.DS_Store
+
+# Логи та тимчасові файли
+/logs
+*.log
+/tmp
+/temp
+*.tmp
+
+# Composer dependencies
+/vendor/
+
+# Node modules
+/node_modules/
+
+# MacOS специфічні файли
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows специфічні файли
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Права на файли
+*.swo
+*.swp
+*.swn
+*.swt
+*.bak
+
+# IDE специфічні файли
+.vscode/
+.idea/
+
+# NetBeans специфічні файли
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Sublime Text специфічні файли
+*.sublime-project
+*.sublime-workspace
+
+# Vim специфічні файли
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Linux специфічні файли
+*~
