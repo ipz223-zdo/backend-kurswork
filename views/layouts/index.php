@@ -1,3 +1,10 @@
+<?php
+/** @var string $Title */
+/** @var string $Content */
+if (empty($Title)){
+    $Title = '';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

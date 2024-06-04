@@ -2,20 +2,26 @@
 
 namespace controllers;
 
-class UserController
+use core\Controller;
+use core\Core;
+use core\Template;
+
+class UserController extends Controller
 {
- public function actionAdd()
- {
-    return [
-        'Title' => 'Реєстрація',
-        'Content' => 'Новий користувач'
-    ];
- }
- public function actionDelete()
- {
-     return [
-         'Title' => 'Видалення',
-         'Content' => 'Видалення користувача'
-     ];
- }
+    public function actionAdd()
+    {
+     return $this->render();
+    }
+    public function actionDelete()
+    {
+     return $this->render();
+    }
+    public function actionIndex()
+    {
+        $db = Core::get()->db;
+        $rows = $db->select("laptops", ["name", "description", "brand"], [
+            "id" => 2
+        ]);
+        return $this->render();
+    }
 }
