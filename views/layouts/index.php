@@ -1,8 +1,14 @@
 <?php
 /** @var string $Title */
 /** @var string $Content */
+
+use models\Users;
+
 if (empty($Title)){
     $Title = '';
+}
+if (empty($Content)){
+    $Content = '';
 }
 ?>
 <!DOCTYPE html>
@@ -34,14 +40,18 @@ if (empty($Title)){
 
         <div class="dropdown text-end">
             <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <?php if(Users::IsUserLogged()) : ?>
                 <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                <?php endif; ?>
             </a>
             <ul class="dropdown-menu text-small">
                 <li><a class="dropdown-item" href="#">New project...</a></li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><a class="dropdown-item" href="#">Profile</a></li>
+                <?php if(Users::IsUserLogged()) : ?>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                <li><a class="dropdown-item" href="/users/logout">Log out</a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

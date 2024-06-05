@@ -6,11 +6,13 @@ use core\Controller;
 
 class SiteController extends Controller
 {
-    public function actionIndex(){
+    public function actionIndex()
+    {
         return $this->render();
     }
 
-    public function actionError(){
+    public function actionError()
+    {
         return $this->render();
     }
 }
