@@ -4,8 +4,9 @@ namespace core;
 
 class Template
 {
-    protected $templateFilePath;
-    protected $paramsArray;
+    protected string $templateFilePath;
+    protected array $paramsArray;
+    public Controller $controller;
     public function __set($name, $value)
     {
         Core::get()->template->setParam($name, $value);
@@ -15,24 +16,25 @@ class Template
         $this->templateFilePath = $templateFilePath;
         $this->paramsArray = [];
     }
-    public function setTemplateFilePath($path)
+    public function setTemplateFilePath($path): void
     {
         $this->templateFilePath = $path;
     }
-    public function setParam($paramName, $paramValue)
+    public function setParam($paramName, $paramValue): void
     {
         $this->paramsArray[$paramName] = $paramValue;
     }
 
-    public function setParams($params)
+    public function setParams($params): void
     {
         foreach ($params as $key => $value)
             $this->setParam($key, $value);
     }
 
-    public function getHTML()
+    public function getHTML(): false|string
     {
         ob_start();
+        $this->controller = Core::get()->controllerObject;
         extract($this->paramsArray);
         include($this->templateFilePath);
         $str = ob_get_contents();
@@ -40,7 +42,7 @@ class Template
         return $str;
     }
 
-    public function display()
+    public function display(): void
     {
         echo $this->getHTML();
     }

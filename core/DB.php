@@ -6,7 +6,7 @@ use PDO;
 
 class DB
 {
-    public $pdo;
+    public PDO $pdo;
 
     public function __construct($host, $name, $login, $password)
     {
@@ -17,7 +17,7 @@ class DB
             ]);
     }
 
-    protected function where($where)
+    protected function where($where): string
     {
         if (is_array($where)) {
             $where_string = "WHERE ";
@@ -35,7 +35,7 @@ class DB
         return $where_string;
     }
 
-    public function select($table, $fields = "*", $where = null) //
+    public function select($table, $fields = "*", $where = null): false|array //
     {
         if (is_array($fields))
             $fields_string = implode(',', $fields);
@@ -55,7 +55,7 @@ class DB
         return $sth->fetchAll();
     }
 
-    public function insert($table, $row_to_insert)
+    public function insert($table, $row_to_insert): int
     {
         $field_list = implode(',', array_keys($row_to_insert));
         $params_array = [];
@@ -71,7 +71,7 @@ class DB
         return $sth->rowCount();
     }
 
-    public function delete($table, $where)
+    public function delete($table, $where): int
     {
         $where_string = $this->where($where);
 
@@ -83,7 +83,7 @@ class DB
         return $sth->rowCount();
     }
 
-    public function update($table, $row_to_update, $where)
+    public function update($table, $row_to_update, $where): int
     {
         $where_string = $this->where($where);
 

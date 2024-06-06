@@ -9,7 +9,8 @@ class Router
     {
         $this -> route = $route;
     }
-    public function run(){
+    public function run()
+    {
         $parts = explode('/', $this -> route);
         if (strlen($parts[0]) == 0){
             $parts[0] = 'site';
@@ -24,6 +25,7 @@ class Router
         $method = 'action' . ucfirst($parts[1]);
         if(class_exists($controller)) {
             $controllerObject = new $controller();
+            Core::get()->controllerObject = $controllerObject;
             if(method_exists($controller ,$method)){
                 array_splice($parts, 0, 2);
                 return $controllerObject->$method($parts);
@@ -38,7 +40,8 @@ class Router
     public function end(){
 
     }
-    public function error($code){
+    public function error($code): void
+    {
         http_response_code($code);
         echo $code;
     }

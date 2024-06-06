@@ -4,9 +4,9 @@ namespace core;
 
 class Model
 {
-    protected $fieldsArray;
-    protected static $primaryKey = "id";
-    protected static $tableName = '';
+    protected array $fieldsArray;
+    protected static string $primaryKey = "id";
+    protected static string $tableName = '';
 
     public function __construct()
     {
@@ -20,15 +20,15 @@ class Model
 
     public function __get($name)
     {
-        return isset($this->fieldsArray[$name]) ? $this->fieldsArray[$name] : null;
+        return $this->fieldsArray[$name];
     }
 
-    public static function deleteByID($id)
+    public static function deleteByID($id): void
     {
         Core::get()->db->delete(static::$tableName, [static::$primaryKey => $id]);
     }
 
-    public static function deleteByCondition($conditionAssocArray)
+    public static function deleteByCondition($conditionAssocArray): void
     {
         Core::get()->db->delete(static::$tableName, $conditionAssocArray);
     }
@@ -42,7 +42,7 @@ class Model
             return null;
     }
 
-    public static function findByCondition($conditionAssocArray)
+    public static function findByCondition($conditionAssocArray): false|array|null
     {
         $arr = Core::get()->db->select(static::$tableName, '*', $conditionAssocArray);
         if (count($arr) > 0)
@@ -51,11 +51,18 @@ class Model
             return null;
     }
 
-    public function save()
+    public function save(): void
     {
-
-        $value = $this->{static::$primaryKey};
-        if (empty($value)) {
+        $isInsert = false;
+        if(!isset($this->{static::$primaryKey}))
+            $isInsert = true;
+        else
+        {
+            $value = $this->{static::$primaryKey};
+            if (empty($value))
+                $isInsert = true;
+        }
+        if ($isInsert) {
             //insert
             Core::get()->db->insert(static::$tableName, $this->fieldsArray);
         } else {
