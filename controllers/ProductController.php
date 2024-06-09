@@ -95,7 +95,7 @@ class ProductController extends Controller
                             $this->addErrorMessage('Не вірний формат введених даних. Вони повинні виглядати так: Хар-ка1: Значення1, Хар-ка2: Значення2');
                         }
                     }
-                    if (!is_numeric($quantity) || $quantity <= 0) {
+                    if (!is_numeric($quantity) || $quantity < 0) {
                         $this->addErrorMessage('Невірно вказана кількість товару');
                     }
                     if (!empty($photos['name'][0])) {
@@ -158,7 +158,7 @@ class ProductController extends Controller
                         $this->addErrorMessage('Не вірний формат введених даних. Вони повинні виглядати так: Хар-ка1: Значення1, Хар-ка2: Значення2');
                     }
                 }
-                if (!is_numeric($quantity) || $quantity <= 0) {
+                if (!is_numeric($quantity) || $quantity < 0) {
                     $this->addErrorMessage('Невірно вказана кількість товару');
                 }
                 if (!$this->isErrorMessagesExist()) {

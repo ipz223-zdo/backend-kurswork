@@ -80,9 +80,10 @@ class Product extends Model
     public static function deleteProduct($product_id)
     {
         self::deleteByID($product_id);
+        ProductImages::deletePhotosByProductId($product_id);
     }
 
-    public static function decreaseQuantity($product_id, $quantity)
+    public static function decreaseQuantity($product_id, $quantity): void
     {
         $product = self::findByID($product_id);
         if ($product) {

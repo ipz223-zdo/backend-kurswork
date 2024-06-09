@@ -53,4 +53,14 @@ class Users extends Model
         $user->lastName = $lastname;
         $user->save();
     }
+    public static function UpdateUser($id, $login, $password, $firstname, $lastname): void
+    {
+        $user = new Users();
+        $user->id = $id;
+        $user->login = $login;
+        $user->password = $password;
+        $user->firstName = $firstname;
+        $user->lastName = $lastname;
+        $user->save();
+    }
 }

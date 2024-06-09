@@ -54,7 +54,7 @@ class Model
     public function save(): void
     {
         $isInsert = false;
-        if(!isset($this->{static::$primaryKey}))
+        if(isset($this->{static::$primaryKey}))
             $isInsert = true;
         else
         {
