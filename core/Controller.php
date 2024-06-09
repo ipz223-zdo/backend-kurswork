@@ -2,6 +2,7 @@
 
 namespace core;
 
+
 class Controller
 {
     protected Template $template;
@@ -28,14 +29,18 @@ class Controller
         $this->get = new Get();
         $this->errorMessages = [];
     }
-    public function render($pathToView = null): array
+
+    public function render($pathToView = null, $data = []): array
     {
-        if(!empty($pathToView))
+        if (!empty($pathToView)) {
             $this->template->setTemplateFilePath($pathToView);
+        }
+        $this->template->setParams($data);
         return [
             'Content' => $this->template->getHTML()
         ];
     }
+
     public function redirect($path): void
     {
         header("Location: {$path}");

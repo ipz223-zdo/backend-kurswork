@@ -35,6 +35,7 @@ class Users extends Model
     {
         return !empty(Core::get()->session->get('user'));
     }
+
     public static function LoginUser($user): void
     {
         Core::get()->session->set('user', $user);

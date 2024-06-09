@@ -24,6 +24,13 @@ class Core
         $this->session = new Session();
         session_start();
     }
+
+    public static function isUserAdmin(): bool
+    {
+        $loggedInUser = Core::get()->session->get('user');
+        return !empty($loggedInUser) && $loggedInUser['login'] === 'admin@gmail.com';
+    }
+
     public function run($route): void
     {
         $this->router = new Router($route);
