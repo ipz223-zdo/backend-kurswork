@@ -10,15 +10,68 @@ use models\Users;
 
 class ProductController extends Controller
 {
+    public function actionCategory($type): array
+    {
+        if (!empty($type[0])) {
+            $products = Product::findByType($type[0]);
+            if (!empty($products)) {
+                usort($products, function ($a, $b) {
+                    return $b['quantity'] - $a['quantity'];
+                });
+                $productIds = array_column($products, 'product_id');
+                $photos = ProductImages::getAllPhotosByProductIds($productIds);
+                return $this->render(null, ['products' => $products, 'photos' => $photos]);
+            } else {
+                $this->redirect("/product/error404");
+                return $this->render();
+            }
+        } else {
+            $this->addErrorMessage('Оберіть категорію');
+            return $this->render();
+        }
+    }
+
     public function actionIndex(): array
     {
-        $products = Product::findAll();
-        $productIds = [];
-        foreach ($products as $product) {
-            $productIds[] = $product->product_id;
+        $laptops = Product::findByType('laptop');
+        $phones = Product::findByType('phone');
+        $tvs = Product::findByType('tv');
+        if (!empty($laptops)) {
+            usort($laptops, function ($a, $b) {
+                return $b['quantity'] - $a['quantity'];
+            });
         }
-        $photos = \models\ProductImages::getAllPhotosByProductIds($productIds);
-        return $this->render(null, ['products' => $products, 'photos' => $photos]);
+        if (!empty($phones)) {
+            usort($phones, function ($a, $b) {
+                return $b['quantity'] - $a['quantity'];
+            });
+        }
+        if (!empty($tvs)) {
+            usort($tvs, function ($a, $b) {
+                return $b['quantity'] - $a['quantity'];
+            });
+        }
+
+        $laptops = array_slice($laptops, 0, 4);
+        $phones = array_slice($phones, 0, 4);
+        $tvs = array_slice($tvs, 0, 4);
+
+        $laptopIds = array_column($laptops, 'product_id');
+        $phoneIds = array_column($phones, 'product_id');
+        $tvIds = array_column($tvs, 'product_id');
+
+        $laptopPhotos = \models\ProductImages::getAllPhotosByProductIds($laptopIds);
+        $phonePhotos = \models\ProductImages::getAllPhotosByProductIds($phoneIds);
+        $tvPhotos = \models\ProductImages::getAllPhotosByProductIds($tvIds);
+
+        return $this->render(null, [
+            'laptops' => $laptops,
+            'laptopPhotos' => $laptopPhotos,
+            'phones' => $phones,
+            'phonePhotos' => $phonePhotos,
+            'tvs' => $tvs,
+            'tvPhotos' => $tvPhotos
+        ]);
     }
 
     public function actionView($product_id)
@@ -54,9 +107,11 @@ class ProductController extends Controller
         $findName = $this->post->FindName;
         if (!empty($findName)) {
             $products = Product::findByName($findName);
-            usort($products, function ($a, $b) {
-                return  $b['quantity'] - $a['quantity'];
-            });
+            if (!empty($products)) {
+                usort($products, function ($a, $b) {
+                    return $b['quantity'] - $a['quantity'];
+                });
+            }
             if (!empty($products)) {
                 $productIds = array_column($products, 'product_id');
                 $photos = ProductImages::getAllPhotosByProductIds($productIds);
@@ -191,26 +246,5 @@ class ProductController extends Controller
             return $this->render();
         } else
             $this->redirect('/product/error403');
-    }
-
-    public function actionCategory($type): array
-    {
-        if (!empty($type[0])) {
-            $products = Product::findByType($type[0]);
-            if (!empty($products)) {
-                usort($products, function ($a, $b) {
-                    return  $b['quantity'] - $a['quantity'];
-                });
-                $productIds = array_column($products, 'product_id');
-                $photos = ProductImages::getAllPhotosByProductIds($productIds);
-                return $this->render(null, ['products' => $products, 'photos' => $photos]);
-            } else {
-                $this->redirect("/product/error404");
-                return $this->render();
-            }
-        } else {
-            $this->addErrorMessage('Оберіть категорію');
-            return $this->render();
-        }
     }
 }

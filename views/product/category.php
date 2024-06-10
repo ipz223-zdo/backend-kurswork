@@ -3,6 +3,13 @@
 $this->Title = 'Список товарів';
 $products = $this->paramsArray['products'] ?? [];
 $photos = $this->paramsArray['photos'] ?? [];
+
+$maxPrice = 0;
+foreach ($products as $product) {
+    if ($product['price'] > $maxPrice) {
+        $maxPrice = $product['price'];
+    }
+}
 ?>
 <?php if (!empty($error_message)) : ?>
     <div class="my-5 d-flex flex-wrap align-items-center justify-content-center container">
@@ -11,49 +18,120 @@ $photos = $this->paramsArray['photos'] ?? [];
         </div>
     </div>
 <?php endif; ?>
-<div class="dropdown d-flex flex-wrap align-items-center justify-content-end container">
-    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        Сортувати
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-        <li><a class="dropdown-item sort-option" data-sort="asc" href="#">Від дешевих до дорогих</a></li>
-        <li><a class="dropdown-item sort-option" data-sort="desc" href="#">Від дорогих до дешевих</a></li>
-        <li><a class="dropdown-item sort-option" data-sort="availability" href="#">За наявністю</a></li>
-    </ul>
-</div>
+<div class="container d-flex">
+    <div class="container">
+        <h4>Фільтрувати за ціною</h4>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="minPrice" class="form-label">Від: <span id="minPriceValue">0</span></label>
+                <input type="range" class="form-range" min="0" value="0" max="<?= $maxPrice ?>" id="minPrice">
+            </div>
+            <div class="col-md-3">
+                <label for="maxPrice" class="form-label">До: <span id="maxPriceValue"><?= $maxPrice ?></span></label>
+                <input type="range" class="form-range" min="0" value="<?= $maxPrice ?>" max="<?= $maxPrice ?>"
+                       id="maxPrice">
+            </div>
+        </div>
+        <div>
+            <button id="filterByPrice" class="btn btn-primary mt-4">Фільтрувати</button>
+        </div>
+    </div>
 
+    <div class="dropdown d-flex flex-wrap align-items-center justify-content-end container">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Сортувати
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+            <li><a class="dropdown-item sort-option" data-sort="asc" href="#">Від дешевих до дорогих</a></li>
+            <li><a class="dropdown-item sort-option" data-sort="desc" href="#">Від дорогих до дешевих</a></li>
+            <li><a class="dropdown-item sort-option" data-sort="availability" href="#">За наявністю</a></li>
+        </ul>
+    </div>
+</div>
 <script>
-    $(document).ready(function() {
-        $('.sort-option').click(function(e) {
-            e.preventDefault(); // Prevent default anchor behavior
+    $(document).ready(function () {
+        $('.sort-option').click(function (e) {
+            e.preventDefault();
             var sortType = $(this).data('sort');
             var productsContainer = $('.products-container');
             var products = productsContainer.children('.card').toArray();
 
             if (sortType === 'asc') {
-                products.sort(function(a, b) {
+                products.sort(function (a, b) {
                     return parseFloat($(a).data('price')) - parseFloat($(b).data('price'));
                 });
             } else if (sortType === 'desc') {
-                products.sort(function(a, b) {
+                products.sort(function (a, b) {
                     return parseFloat($(b).data('price')) - parseFloat($(a).data('price'));
                 });
-            } else{
-                products.sort(function(a, b) {
+            } else {
+                products.sort(function (a, b) {
                     return parseFloat($(b).data('quantity')) - parseFloat($(a).data('quantity'));
                 });
             }
 
             productsContainer.empty();
-            products.forEach(function(product) {
+            products.forEach(function (product) {
                 productsContainer.append(product);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        var minPriceSlider = $('#minPrice');
+        var maxPriceSlider = $('#maxPrice');
+
+        var currentMinPrice = parseFloat(minPriceSlider.val());
+        var currentMaxPrice = parseFloat(maxPriceSlider.val());
+
+        $('#minPriceValue').text(currentMinPrice);
+        $('#maxPriceValue').text(currentMaxPrice);
+
+        minPriceSlider.on('input', function () {
+            var newMinPrice = parseFloat($(this).val());
+            if (newMinPrice > currentMaxPrice) {
+                maxPriceSlider.val(newMinPrice);
+                currentMaxPrice = newMinPrice;
+                $('#maxPriceValue').text(newMinPrice);
+            }
+
+            currentMinPrice = newMinPrice;
+            $('#minPriceValue').text(newMinPrice);
+        });
+
+        maxPriceSlider.on('input', function () {
+            var newMaxPrice = parseFloat($(this).val());
+
+            if (newMaxPrice < currentMinPrice) {
+                minPriceSlider.val(newMaxPrice);
+                currentMinPrice = newMaxPrice;
+                $('#minPriceValue').text(newMaxPrice);
+            }
+
+            currentMaxPrice = newMaxPrice;
+            $('#maxPriceValue').text(newMaxPrice);
+        });
+
+        $('#filterByPrice').click(function () {
+            var minPrice = parseFloat(minPriceSlider.val());
+            var maxPrice = parseFloat(maxPriceSlider.val());
+
+            $('.card').each(function () {
+                var price = parseFloat($(this).data('price'));
+                if ((isNaN(minPrice) || price >= minPrice) && (isNaN(maxPrice) || price <= maxPrice)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
             });
         });
     });
 </script>
 <div class="d-flex flex-wrap align-items-center justify-content-center container products-container">
     <?php foreach ($products as $product): ?>
-    <?php
+        <?php
         if ($product['quantity'] > 5) {
             $stockStatus = 'Є в наявності';
             $textClass = 'text-success fw-bold';
@@ -68,10 +146,13 @@ $photos = $this->paramsArray['photos'] ?? [];
             $cardClass = 'opacity-50';
         }
         ?>
-        <div class="card m-2 <?= $cardClass ?>" style="width: 18rem;" data-price="<?= $product['price'] ?>" data-quantity="<?= $product['quantity'] ?>">
+        <div class="card m-2 <?= $cardClass ?> px-1" style="width: 18rem;" data-price="<?= $product['price'] ?>"
+             data-quantity="<?= $product['quantity'] ?>">
             <?php if (!empty($photos[$product['product_id']])): ?>
                 <?php $firstPhotoUrl = $photos[$product['product_id']]['image_url']; ?>
-                <img src="/uploads/<?= htmlspecialchars($firstPhotoUrl) ?>" class="card-img-top my-3 w-100 rounded" alt="<?= htmlspecialchars($product['name']) ?>" style="height: 200px; width: auto; object-fit: contain;">
+                <img src="/uploads/<?= htmlspecialchars($firstPhotoUrl) ?>" class="card-img-top my-3 w-100 rounded"
+                     alt="<?= htmlspecialchars($product['name']) ?>"
+                     style="height: 200px; width: auto; object-fit: contain;">
             <?php else: ?>
                 <img src="..." class="card-img-top" alt="Фото не знайдено">
             <?php endif; ?>

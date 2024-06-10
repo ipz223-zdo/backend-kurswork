@@ -55,8 +55,8 @@ $this->Title = 'Змінити товар'
             <button type="submit" class="btn btn-primary">Оновити продукт</button>
         </div>
         <div class="form-group">
-            <label for="photos">Додати фото:</label>
-            <input type="file" class="form-control-file" id="photos" name="photos[]" multiple>
+            <label for="photos" class="form-label">Додати фото:</label>
+            <input type="file" class="form-control" id="photos" name="photos[]" multiple>
         </div>
     </form>
 </div>
