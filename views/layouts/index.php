@@ -38,16 +38,24 @@ if (empty($Content)) {
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
             <li><a href="/" class="nav-link px-2 link-secondary">Головна</a></li>
-            <li><a href="/order/find" class="nav-link px-2 link-body-emphasis">Знайти замовлення</a></li>
-            <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Каталог
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="/product/category/laptop">Ноутбуки</a></li>
+                    <li><a class="dropdown-item" href="/product/category/phone">Смартфони</a></li>
+                    <li><a class="dropdown-item" href="/product/category/tv">Телевізори</a></li>
+                </ul>
+            </li>
             <?php if (!Users::IsUserLogged()) : ?>
                 <li><a href="/users/login" class="nav-link px-2 link-body-emphasis">Увійти</a></li>
                 <li><a href="/users/register" class="nav-link px-2 link-body-emphasis">Зареєстуватися</a></li>
             <?php endif; ?>
         </ul>
 
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 flex-grow-1 mx-5" role="search">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 flex-grow-1 mx-5" role="search" method="post" action="/product/list">
+            <input type="search" name="FindName" class="form-control" placeholder="Пошук за назвою" aria-label="Search">
         </form>
 
         <a href="/cart/index" class="btn btn-outline-success">

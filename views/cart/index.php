@@ -1,4 +1,6 @@
-<?php $this->Title = 'Кошик'; ?>
+<?php $this->Title = 'Кошик';
+$isLoggedIn = \models\Users::IsUserLogged()
+?>
 
 <div class="container">
     <h1>Ваш кошик</h1>
@@ -70,7 +72,13 @@
 </div>
 
 <script>
+    var isLoggedIn = <?= json_encode($isLoggedIn) ?>;
+
     function showOrderForm() {
-        document.getElementById('orderForm').style.display = 'block';
+        if (isLoggedIn) {
+            document.getElementById('orderForm').style.display = 'block';
+        } else {
+            window.location.href = '/users/login';
+        }
     }
 </script>

@@ -39,23 +39,6 @@ class OrderController extends Controller
         return $this->render(null, ['orders' => $orders]);
     }
 
-    public function actionFind()
-    {
-        if (!empty($_POST['order_id'])) {
-            $orderId = $_POST['order_id'];
-
-            $order = Order::findOne($orderId);
-            if ($order) {
-                $this->redirect("/order/view/" . $orderId);
-                exit;
-            } else {
-                $this->addErrorMessage('Замовлення з таким ідентифікатором не знайдено.');
-                return $this->render();
-            }
-        }
-        return $this->render();
-    }
-
     private function getTotalAmountFromCart()
     {
         $cart = new Cart();
@@ -87,11 +70,18 @@ class OrderController extends Controller
                 $order->status = 'pending';
                 $order->products_json = json_encode($products);
                 $order->save();
-                $this->redirect('/cart/clear/');
+                $this->redirect('/order/createsuccess');
             }
         } else {
             return $this->render(null, ['totalAmount' => $totalAmount]);
         }
+        return $this->render();
+    }
+
+    public function actionCreatesuccess()
+    {
+        $cart = new Cart();
+        $cart->clear();
         return $this->render();
     }
 

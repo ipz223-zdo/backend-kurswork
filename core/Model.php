@@ -42,9 +42,9 @@ class Model
             return null;
     }
 
-    public static function findByCondition($conditionAssocArray): false|array|null
+    public static function findByCondition($conditionAssocArray, $like = false): false|array|null
     {
-        $arr = Core::get()->db->select(static::$tableName, '*', $conditionAssocArray);
+        $arr = Core::get()->db->select(static::$tableName, '*', $conditionAssocArray, $like);
         if (count($arr) > 0)
             return $arr;
         else

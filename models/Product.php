@@ -38,9 +38,18 @@ class Product extends Model
 
     public static function findByName($name)
     {
-        $rows = self::findByCondition(['name' => $name]);
+        $rows = self::findByCondition(['name' => '%'.$name.'%'], true);
         if (!empty($rows)) {
-            return $rows[0];
+            return $rows;
+        }
+        return null;
+    }
+
+    public static function findByType($type)
+    {
+        $rows = self::findByCondition(['type' => $type]);
+        if (!empty($rows)) {
+            return $rows;
         }
         return null;
     }

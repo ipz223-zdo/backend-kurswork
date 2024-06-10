@@ -3,6 +3,8 @@
 namespace core;
 
 
+use JetBrains\PhpStorm\NoReturn;
+
 class Controller
 {
     protected Template $template;
@@ -41,7 +43,7 @@ class Controller
         ];
     }
 
-    public function redirect($path): void
+    #[NoReturn] public function redirect($path): void
     {
         header("Location: {$path}");
         die();

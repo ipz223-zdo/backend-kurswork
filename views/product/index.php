@@ -20,7 +20,7 @@ $photos = $this->paramsArray['photos'] ?? [];
             $cardClass = 'opacity-50';
         }
         ?>
-        <div class="card m-2 <?= $cardClass ?>" style="width: 18rem;">
+        <div class="card m-2 <?= $cardClass ?> px-1" style="width: 18rem;">
             <?php if (!empty($photos[$product->product_id])): ?>
                 <?php $firstPhotoUrl = $photos[$product->product_id]['image_url']; ?>
                 <img src="/uploads/<?= htmlspecialchars($firstPhotoUrl) ?>" class="card-img-top my-3 w-100 rounded" alt="<?= htmlspecialchars($product->name) ?>" style="height: 200px; width: auto; object-fit: contain;">

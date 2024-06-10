@@ -20,6 +20,7 @@ class ProductController extends Controller
         $photos = \models\ProductImages::getAllPhotosByProductIds($productIds);
         return $this->render(null, ['products' => $products, 'photos' => $photos]);
     }
+
     public function actionView($product_id)
     {
         $product = Product::findByID($product_id[0]);
@@ -48,14 +49,34 @@ class ProductController extends Controller
         return $this->render();
     }
 
+    public function actionList(): array
+    {
+        $findName = $this->post->FindName;
+        if (!empty($findName)) {
+            $products = Product::findByName($findName);
+            usort($products, function ($a, $b) {
+                return  $b['quantity'] - $a['quantity'];
+            });
+            if (!empty($products)) {
+                $productIds = array_column($products, 'product_id');
+                $photos = ProductImages::getAllPhotosByProductIds($productIds);
+                return $this->render(null, ['products' => $products, 'photos' => $photos]);
+            } else {
+                $this->addErrorMessage('Товар не знайдено');
+                return $this->render();
+            }
+        } else {
+            $this->addErrorMessage('Введіть назву для пошуку');
+            return $this->render();
+        }
+    }
+
     public function actionDelete($id): array
     {
         if (Core::isUserAdmin()) {
             Product::deleteProduct($id[0]);
             return $this->render();
-        } else {
-            return $this->redirect('/');
-        }
+        } else $this->redirect('/');
     }
 
     public function actionUpdate($product_id): ?array
@@ -111,7 +132,7 @@ class ProductController extends Controller
                     }
                     if (!$this->isErrorMessagesExist()) {
                         Product::updateProduct($product_id[0], $name, $price, $type, $characteristicsJson, $quantity);
-                        return $this->redirect('/product/view/' . $product_id[0]);
+                        $this->redirect('/product/view/' . $product_id[0]);
                     }
                 }
                 return $this->render(null, ['product' => $product]);
@@ -120,7 +141,7 @@ class ProductController extends Controller
                 return $this->render();
             }
         } else {
-            return $this->redirect('/');
+            $this->redirect('/');
         }
     }
 
@@ -164,11 +185,32 @@ class ProductController extends Controller
                 if (!$this->isErrorMessagesExist()) {
                     var_dump($characteristicsJson);
                     Product::createProduct($name, $price, $type, $characteristicsJson, $quantity);
-                    return $this->redirect('/product/createsuccess');
+                    $this->redirect('/product/createsuccess');
                 }
             }
             return $this->render();
         } else
-            return $this->redirect('/product/error403');
+            $this->redirect('/product/error403');
+    }
+
+    public function actionCategory($type): array
+    {
+        if (!empty($type[0])) {
+            $products = Product::findByType($type[0]);
+            if (!empty($products)) {
+                usort($products, function ($a, $b) {
+                    return  $b['quantity'] - $a['quantity'];
+                });
+                $productIds = array_column($products, 'product_id');
+                $photos = ProductImages::getAllPhotosByProductIds($productIds);
+                return $this->render(null, ['products' => $products, 'photos' => $photos]);
+            } else {
+                $this->redirect("/product/error404");
+                return $this->render();
+            }
+        } else {
+            $this->addErrorMessage('Оберіть категорію');
+            return $this->render();
+        }
     }
 }
